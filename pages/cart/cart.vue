@@ -5,7 +5,8 @@
 			<image src="/static/emptyCart.jpg" mode="aspectFit"></image>
 			<view v-if="hasLogin" class="empty-tips">
 				空空如也
-				<navigator class="navigator" v-if="hasLogin" url="../index/index" open-type="switchTab">随便逛逛></navigator>
+				<navigator class="navigator" v-if="hasLogin" url="../index/index" open-type="switchTab">随便逛逛>
+				</navigator>
 			</view>
 			<view v-else class="empty-tips">
 				空空如也
@@ -18,14 +19,19 @@
 				<block v-for="(item, index) in cartItems" :key="item.skuId">
 					<view class="cart-item" :class="{ 'b-b': index !== cartList.length - 1 }">
 						<view class="image-wrapper">
-							<image :src="item.pic" class="loaded" mode="aspectFill" lazy-load @load="onImageLoad('cartItems', index)" @error="onImageError('cartItems', index)"></image>
-							<view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: item.checked }" @click="handleCheckItem(index, item.skuId)"></view>
+							<image @click="navTo(item.spuId)" :src="item.pic" class="loaded" mode="aspectFill" lazy-load
+								@load="onImageLoad('cartItems', index)" @error="onImageError('cartItems', index)">
+							</image>
+							<view class="yticon icon-xuanzhong2 checkbox" :class="{ checked: item.checked }"
+								@click="handleCheckItem(index, item.skuId)"></view>
 						</view>
 						<view class="item-right">
-							<text class="clamp title">{{ item.skuName }}</text>
-							<text class="price">¥{{ item.price | moneyFormatter }}</text>
-							<uni-number-box  class="step" :min="1" :max="item.stock" :value="item.count > item.stock ? item.stock : item.count"
-							 :isMax="item.count >= item.stock ? true : false" :isMin="item.count === 1" :index="index" @eventChange="handleChangeCount($event, item.skuId)" />
+							<text @click="navTo(item.spuId)" class="clamp title">{{ item.skuName }}</text>
+							<text @click="navTo(item.spuId)" class="price">¥{{ item.price | moneyFormatter }}</text>
+							<uni-number-box class="step" :min="1" :max="item.stock"
+								:value="item.count > item.stock ? item.stock : item.count"
+								:isMax="item.count >= item.stock ? true : false" :isMin="item.count === 1"
+								:index="index" @eventChange="handleChangeCount($event, item.skuId)" />
 						</view>
 						<text class="del-btn yticon icon-fork" @click="removeCartItem(item.skuId)"></text>
 					</view>
@@ -34,7 +40,8 @@
 			<!-- 底部菜单栏 -->
 			<view class="action-section">
 				<view class="checkbox">
-					<image :src="allChecked ? '/static/selected.png' : '/static/select.png'" mode="aspectFit" @click="handleCheckAll()"></image>
+					<image :src="allChecked ? '/static/selected.png' : '/static/select.png'" mode="aspectFit"
+						@click="handleCheckAll()"></image>
 					<view class="clear-btn" :class="{ show: allChecked }" @click="clearCart">清空</view>
 				</view>
 				<view class="total-box">
@@ -45,16 +52,14 @@
 						元
 					</text>
 				</view>
-				<button type="primary" class="no-border confirm-btn" @click="handleCreateOrder" :disabled="!isSubmit">去结算</button>
+				<button type="primary" class="no-border confirm-btn" @click="handleCreateOrder"
+					:disabled="!isSubmit">去结算</button>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {
-		mapState
-	} from 'vuex';
 	import {
 		mapGetters
 	} from 'vuex';
@@ -78,7 +83,7 @@
 				empty: false, //空白页现实  true|false
 				cartItems: [],
 				coupon: 0,
-				isSubmit:false
+				isSubmit: false
 			};
 		},
 		onShow: function() {
@@ -86,11 +91,7 @@
 			console.log('========>> 进入商品详情页面, 路径:', this.$mp.page.route, '参数');
 			this.loadData();
 		},
-		// onLoad(){
-		// 	// 加载页面时，查询购物车详情
-		// 	console.log('========>> 进入商品详情页面, 路径:', this.$mp.page.route, '参数');
-		// 	this.loadData();
-		// },
+		
 		watch: {
 			//显示空白页
 			cartItems(e) {
@@ -109,13 +110,14 @@
 				getCart().then(response => {
 					this.cartItems = [];
 					this.totalPrice = 0;
-					console.log('获取购物车数据', response.data);
+					console.log('获取购物车数据', response);
 					const {
 						items
 					} = response.data;
 					if (items.length > 0) {
-						items.forEach((item,index)=>{
-							this.$set(this.cartItems,index,item)
+						this.$store.dispatch('user/getCartCount')
+						items.forEach((item, index) => {
+							this.$set(this.cartItems, index, item)
 						})
 						this.changeCart(); //计算总价
 					}
@@ -161,19 +163,29 @@
 					checked: !this.allChecked
 				};
 				checkAll(params).then((response) => {
-					this.loadData();
-				})
-				.catch((err)=>{console.log('发送失败',err);});
+						this.loadData();
+					})
+					.catch((err) => {
+						console.log('发送失败', err);
+					});
 			},
 
 			// 删除购物车商品
 			removeCartItem(skuId) {
-				removeCartItem(skuId).then(response => {
-					this.loadData();
+				uni.showModal({
+					content: '删除该商品？',
+					success: (e) => {
+						if (e.confirm) {
+							removeCartItem(skuId).then(response => {
+								this.loadData();
+							})
+						} else {
+							console.log('取消删除操作')
+						}
+					}
 				});
 				uni.hideLoading();
 			},
-
 			// 清空购物车
 			clearCart() {
 				uni.showModal({
@@ -203,15 +215,17 @@
 				}
 				this.allChecked = checked;
 				this.isSubmit = false
-				const checkedList = this.cartItems.filter(item=>item.checked)
+				const checkedList = this.cartItems.filter(item => item.checked)
 				// console.log(checkedList);
-				if(checkedList.length){this.isSubmit = true}
+				if (checkedList.length) {
+					this.isSubmit = true
+				}
 				let temPrice = 0
-				checkedList.forEach(item=>{
+				checkedList.forEach(item => {
 					temPrice += item.price * item.count
 				})
 				this.totalPrice = temPrice
-				
+
 			},
 
 			// 结算页面
@@ -227,6 +241,12 @@
 					url: '/pages/public/login'
 				});
 			},
+			// 跳转到商品详情页
+			navTo(id) {
+				uni.navigateTo({
+					url: `/pages/product/product?id=${id}`
+				})
+			}
 		}
 	};
 </script>

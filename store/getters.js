@@ -3,6 +3,7 @@ const getters = {
 	nickname: state => state.user.nickname,
 	avatar: state => state.user.avatar,
 	balance: state => state.user.balance,
-	memberId: state => state.user.memberId
+	memberId: state => state.user.memberId,
+	cartCount:state=>state.user.cartCount
 }
 export default getters

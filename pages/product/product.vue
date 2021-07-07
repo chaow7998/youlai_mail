@@ -21,7 +21,7 @@
         <text class="price-tip">¥</text>
         <text class="price">{{ spu.price | moneyFormatter }}</text>
         <text class="m-price">¥{{ spu.originPrice | moneyFormatter }}</text>
-        <text class="coupon-tip">{{getDisCount}}折</text>
+        <text class="coupon-tip">{{ getDisCount }}折</text>
       </view>
       <view class="bot-row">
         <text>销量: {{ spu.sales }}</text>
@@ -67,7 +67,7 @@
         <view class="con-list">
           <text>新人首单送20元无门槛代金券</text>
           <text>订单满50减10</text>
-          <text>订单满100减30</text>
+          <text>订单满100减24</text>
           <text>单笔购买满两件免邮费</text>
         </view>
       </view>
@@ -115,10 +115,11 @@
     <!-- 底部操作菜单 -->
     <view class="page-bottom">
       <navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
-        <text class="yticon icon-xiatubiao--copy"></text>
+        <text class="yticon icon-xiatubiao--copy"> </text>
         <text>首页</text>
       </navigator>
-      <navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
+      <navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn" style="position:relative;">
+        <div class="countSign" v-if="cartCount"><text>{{cartCount}}</text></div>
         <text class="yticon icon-gouwuche"></text>
         <text>购物车</text>
       </navigator>
@@ -200,6 +201,7 @@ import share from "@/components/share";
 import { detail, getSkuStock } from "@/api/pms/product.js";
 
 import { addCartItem, confirm as orderConfirm } from "@/api/oms/cart.js";
+import {mapGetters} from 'vuex'
 export default {
   components: {
     share,
@@ -229,11 +231,12 @@ export default {
       shareList: [],
     };
   },
-  computed:{
-    getDisCount(){
-      const {originPrice,price} = this.spu
-      return  (price/originPrice).toFixed(1)*10
-    }
+  computed: {
+    getDisCount() {
+      const { originPrice, price } = this.spu;
+      return (price / originPrice).toFixed(1) * 10;
+    },
+    ...mapGetters(['cartCount'])
   },
   async onLoad(options) {
     console.log(
@@ -249,7 +252,6 @@ export default {
       this.attrs = attrs;
       this.specs = specs;
       this.skus = skus;
-
       // 默认选择第一条规格
       this.selectedSpecValueIdArr = [];
       this.specs.forEach((spec) => {
@@ -282,7 +284,7 @@ export default {
     // 跳转到领取优惠卷页面
     navToCoupon() {
       uni.navigateTo({
-        url: '/pages/coupon/coupon',
+        url: "/pages/coupon/coupon",
       });
       console.log("=====");
     },
@@ -353,7 +355,8 @@ export default {
     },
     // 添加至购物车
     addToCart() {
-      const skuId = this.selectedSku.id;
+      const app = this;
+      const skuId = app.selectedSku.id;
       addCartItem(skuId).then((response) => {
         uni.switchTab({
           url: `/pages/cart/cart`,
@@ -376,7 +379,20 @@ page {
   background: $page-color-base;
   padding-bottom: 160upx;
 }
-
+.countSign{
+  width: 24upx;
+  height: 24upx;
+  border-radius: 50%;
+  position: absolute;
+  background: #fa436a;
+  top: -5upx;
+  right: 13upx;
+  font-size: 20upx;
+  font-weight: bold;
+  color: rgb(28, 163, 23);
+  text-align: center;
+  line-height: 20upx;
+}
 .icon-you {
   font-size: $font-base + 2upx;
   color: #888;
@@ -412,7 +428,7 @@ page {
 /* 标题简介 */
 .introduce-section {
   background: #fff;
-  padding: 20upx 30upx;
+  padding: 20upx 24upx;
 
   .title {
     font-size: 32upx;
@@ -470,13 +486,13 @@ page {
   align-items: center;
   color: $font-color-base;
   background: linear-gradient(left, #fdf5f6, #fbebf6);
-  padding: 12upx 30upx;
+  padding: 12upx 24upx;
 
   .share-icon {
     display: flex;
     align-items: center;
     width: 70upx;
-    height: 30upx;
+    height: 24upx;
     line-height: 1;
     border: 1px solid $uni-color-primary;
     border-radius: 4upx;
@@ -514,7 +530,7 @@ page {
 
   .icon-bangzhu1 {
     padding: 10upx;
-    font-size: 30upx;
+    font-size: 24upx;
     line-height: 1;
   }
 
@@ -540,7 +556,7 @@ page {
   .c-row {
     display: flex;
     align-items: center;
-    padding: 20upx 30upx;
+    padding: 20upx 24upx;
     position: relative;
   }
 
@@ -564,7 +580,7 @@ page {
 
     text {
       display: inline-block;
-      margin-right: 30upx;
+      margin-right: 24upx;
     }
   }
 
@@ -585,7 +601,7 @@ page {
 .eva-section {
   display: flex;
   flex-direction: column;
-  padding: 20upx 30upx;
+  padding: 20upx 24upx;
   background: #fff;
   margin-top: 16upx;
 
@@ -673,7 +689,7 @@ page {
       left: 50%;
       top: 50%;
       transform: translateX(-50%);
-      width: 300upx;
+      width: 240upx;
       height: 0;
       content: "";
       border-bottom: 1px solid #ccc;
@@ -683,7 +699,7 @@ page {
 
 /* 规格选择弹窗 */
 .attr-content {
-  padding: 10upx 30upx;
+  padding: 10upx 24upx;
 
   .a-t {
     display: flex;
@@ -721,7 +737,7 @@ page {
     flex-direction: column;
     font-size: $font-base + 2upx;
     color: $font-color-base;
-    padding-top: 30upx;
+    padding-top: 24upx;
     padding-left: 10upx;
   }
 
@@ -812,7 +828,7 @@ page {
       background: $uni-color-primary;
       font-size: $font-base + 2upx;
       color: #fff;
-      margin: 30upx auto 20upx;
+      margin: 24upx auto 20upx;
     }
   }
 
@@ -860,8 +876,8 @@ page {
 /* 底部操作菜单 */
 .page-bottom {
   position: fixed;
-  left: 30upx;
-  bottom: 30upx;
+  left: 24upx;
+  bottom: 24upx;
   z-index: 95;
   display: flex;
   justify-content: center;
@@ -910,7 +926,7 @@ page {
     overflow: hidden;
     box-shadow: 0 20upx 40upx -16upx #fa436a;
     box-shadow: 1px 2px 5px rgba(219, 63, 96, 0.4);
-    background: linear-gradient(to right, #ffac30, #fa436a, #f56c6c);
+    background: linear-gradient(to right, #ffac24, #fa436a, #f56c6c);
     margin-left: 20upx;
     position: relative;
 

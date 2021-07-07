@@ -348,7 +348,7 @@ export default {
 .user-section {
   height: 520upx;
   padding: 100upx 30upx 0;
-  position: relative;
+  // position: relative;
 
   .bg {
     position: absolute;

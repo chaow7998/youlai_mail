@@ -309,7 +309,11 @@ export default {
   methods: {
  // 获取缓存登录信息
     getStorageData() {
-      this.$store.dispatch("user/getStorage");
+      const token = uni.getStorageSync("token")
+      if(token){
+        this.$store.dispatch("user/getStorage");
+      }
+      
     },
 
     /**

@@ -1,4 +1,5 @@
 import { login, getUserInfo, logout } from "@/api/user";
+import {getCart} from '@/api/oms/cart'
 
 const state = {
   hasLogin: false,
@@ -6,6 +7,7 @@ const state = {
   avatar: "",
   balance: 0,
   memberId: "",
+  cartCount:0
 };
 
 const mutations = {
@@ -24,6 +26,9 @@ const mutations = {
   SET_MEMBERID: (state, memberId) => {
     state.memberId = memberId;
   },
+  SET_CART_COUNT:(state,cartCount)=>{
+    state.cartCount = cartCount
+  }
 };
 
 const actions = {
@@ -102,8 +107,13 @@ const actions = {
     commit("SET_AVATAR", avatar);
     commit("SET_BALANCE", balance);
     commit("SET_MEMBERID", memberId);
-    
   },
+  // 获取购物车数量
+ async getCartCount({commit}){
+   const result = await getCart()
+   const cartCount = result.data.items.length
+   commit("SET_CART_COUNT",cartCount)
+  }
 };
 
 export default {

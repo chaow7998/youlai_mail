@@ -1,63 +1,82 @@
 <template>
-  <view class="container">
-    <view class="left-bottom-sign"></view>
-    <view class="back-btn yticon icon-zuojiantou-up" @click="navBack"></view>
-    <view class="right-top-sign"></view>
-    <!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
-    <view class="wrapper">
-      <!-- #ifdef MP -->
-      <template>
-        <button class="confirm-btn" @click.stop="getUserProfile">
-          小程序登录授权
+  <view class="page">
+    <!-- #ifdef MP-->
+    <block>
+      <view class="hd">
+        <image class="logo" src="/static/logo.png"></image>
+        <view class="title">蜉蝣商城欢迎你!</view>
+      </view>
+      <view class="bd">
+        <view class="top_line"></view>
+        <text class="m_name">蜉蝣商城</text>
+        <text class="s_name">获得你的公开信息（昵称、头像等）</text>
+      </view>
+      <view class="btn spacing">
+        <!-- 需要使用 button 来授权登录 -->
+        <button
+          class="weui_btn weui_btn_primary"
+          @click.stop="getUserProfile"
+        >
+          微信登录
         </button>
-        <view class="tip">
-          温馨提示:未注册小店的用户,初次登录时将完成注册
-        </view>
-      </template>
-      <!-- #endif -->
+      </view>
+    </block>
+    <!-- #endif -->
 
-      <!-- #ifdef H5 -->
-      <template>
-        <view class="left-top-sign">LOGIN</view>
-        <view class="welcome">欢迎回来！</view>
-        <view class="input-content">
-          <view class="input-item">
-            <text class="tit">手机号码</text>
-            <input
-              type="number"
-              :value="mobile"
-              placeholder="请输入手机号码"
-              maxlength="11"
-              data-key="mobile"
-              @input="inputChange"
-            />
-          </view>
-          <view class="input-item">
-            <text class="tit">密码</text>
-            <input
-              type="mobile"
-              value=""
-              placeholder="8-18位不含特殊字符的数字、字母组合"
-              placeholder-class="input-empty"
-              maxlength="20"
-              password
-              data-key="password"
-              @input="inputChange"
-              @confirm="toLogin"
-            />
-          </view>
+    <!-- #ifdef H5-->
+    <block>
+      <view class="container">
+        <view class="left-bottom-sign"></view>
+        <view
+          class="back-btn yticon icon-zuojiantou-up"
+          @click="navBack"
+        ></view>
+        <view class="right-top-sign"></view>
+        <!-- 设置白色背景防止软键盘把下部绝对定位元素顶上来盖住输入框等 -->
+        <view class="wrapper">
+          <template>
+            <view class="left-top-sign">LOGIN</view>
+            <view class="welcome">欢迎回来！</view>
+            <view class="input-content">
+              <view class="input-item">
+                <text class="tit">手机号码</text>
+                <input
+                  type="number"
+                  :value="mobile"
+                  placeholder="请输入手机号码"
+                  maxlength="11"
+                  data-key="mobile"
+                  @input="inputChange"
+                />
+              </view>
+              <view class="input-item">
+                <text class="tit">密码</text>
+                <input
+                  type="mobile"
+                  value=""
+                  placeholder="8-18位不含特殊字符的数字、字母组合"
+                  placeholder-class="input-empty"
+                  maxlength="20"
+                  password
+                  data-key="password"
+                  @input="inputChange"
+                  @confirm="toLogin"
+                />
+              </view>
+            </view>
+            <button class="confirm-btn" @click="toLogin" :disabled="logining">
+              登录
+            </button>
+            <view class="forget-section">忘记密码?</view>
+          </template>
         </view>
-        <button class="confirm-btn" @click="toLogin" :disabled="logining">
-          登录
-        </button>
-        <view class="forget-section">忘记密码?</view>
-      </template>
-      <!-- #endif -->
-    </view>
-    <view class="register-section">
-      还没有账号?
-      <text @click="toRegist">马上注册</text>
-    </view>
+        <view class="register-section">
+          还没有账号?
+          <text @click="toRegist">马上注册</text>
+        </view>
+      </view>
+    </block>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -155,6 +174,107 @@ export default {
 </script>
 
 <style lang="scss">
+// #ifdef MP
+view,
+text {
+  font-family: PingFangSC-Light, helvetica, "Heiti SC";
+  font-size: 29rpx;
+  color: #333;
+}
+
+.hd {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hd .logo {
+  border-radius: 50%;
+  width: 300rpx;
+  height: 300rpx;
+  margin-top: 40rpx;
+}
+
+.hd .title {
+  text-align: center;
+  font-size: 36rpx;
+  color: #000;
+}
+
+.bd {
+  width: 100%;
+  padding: 50rpx;
+}
+
+.bd .top_line {
+  width: 100%;
+  height: 1rpx;
+  background: #ccc;
+  margin-top: 20rpx;
+  margin-bottom: 50rpx;
+}
+
+.bd .m_name {
+  display: block;
+  text-align: center;
+  font-size: 36rpx;
+  color: #000;
+}
+
+.bd .s_name {
+  margin-top: 25rpx;
+  display: block;
+  text-align: center;
+  font-size: 34rpx;
+  color: #8a8a8a;
+}
+
+.btn {
+  padding: 120rpx 50rpx 0;
+}
+
+.weui_btn_primary {
+  background-color: #148d38;
+}
+
+.weui_btn {
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  line-height: 2.33333333;
+  border-radius: 5px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+.weui_btn:after {
+  content: " ";
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-transform: scale(0.5);
+  -ms-transform: scale(0.5);
+  transform: scale(0.5);
+  -webkit-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+// #endif
 page {
   background: #fff;
 }
