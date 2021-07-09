@@ -45,6 +45,7 @@
     </view>
 
     <view class="c-list">
+      <!-- 规格参数 -->
       <view class="c-row b-b" @click="toggleSpec">
         <text class="tit">购买类型</text>
         <view class="con">
@@ -57,11 +58,15 @@
         </view>
         <text class="yticon icon-you"></text>
       </view>
+
+      <!-- 优惠卷 -->
       <view class="c-row b-b" @click="navToCoupon">
         <text class="tit">优惠券</text>
         <text class="con t-r red">领取优惠券</text>
         <text class="yticon icon-you"></text>
       </view>
+
+      <!-- 促销活动 -->
       <view class="c-row b-b">
         <text class="tit">促销活动</text>
         <view class="con-list">
@@ -71,17 +76,21 @@
           <text>单笔购买满两件免邮费</text>
         </view>
       </view>
-      <view class="c-row b-b">
+
+      <!-- 商品服务 -->
+      <Service v-if="!isLoading" :goods-id="10005" />
+
+      <!-- <view class="c-row b-b">
         <text class="tit">服务</text>
         <view class="bz-list con">
           <text>7天无理由退换货 ·</text>
           <text>假一赔十 ·</text>
         </view>
-      </view>
+      </view> -->
     </view>
 
     <!-- 评价 -->
-    <view class="eva-section">
+    <!-- <view class="eva-section">
       <view class="e-header">
         <text class="tit">评价</text>
         <text>(86)</text>
@@ -105,8 +114,11 @@
           </view>
         </view>
       </view>
-    </view>
+    </view> -->
+    <!-- 商品评价 -->
+    <Comment v-if="!isLoading" :goods-id="10005" :limit="2" />
 
+    <!-- 商品详情 -->
     <view class="detail-desc">
       <view class="d-header"><text>图文详情</text></view>
       <rich-text :nodes="spu.detail"></rich-text>
@@ -118,8 +130,15 @@
         <text class="yticon icon-xiatubiao--copy"> </text>
         <text>首页</text>
       </navigator>
-      <navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn" style="position:relative;">
-        <div class="countSign" v-if="cartCount"><text>{{cartCount}}</text></div>
+      <navigator
+        url="/pages/cart/cart"
+        open-type="switchTab"
+        class="p-b-btn"
+        style="position: relative"
+      >
+        <div class="countSign" v-if="cartCount">
+          <text>{{ cartCount }}</text>
+        </div>
         <text class="yticon icon-gouwuche"></text>
         <text>购物车</text>
       </navigator>
@@ -197,14 +216,18 @@
 
 <script>
 import share from "@/components/share";
+import Comment from "./components/Comment";
+import Service from "./components/Service";
 
 import { detail, getSkuStock } from "@/api/pms/product.js";
 
 import { addCartItem, confirm as orderConfirm } from "@/api/oms/cart.js";
-import {mapGetters} from 'vuex'
+import { mapGetters } from "vuex";
 export default {
   components: {
     share,
+    Comment,
+    Service,
   },
   data() {
     return {
@@ -223,12 +246,12 @@ export default {
       attrs: [],
       specs: [],
       skus: [],
-
       specClass: "none",
       selectedSku: {},
       selectedSpecValueIdArr: [],
       favorite: true,
       shareList: [],
+      isLoading: true,
     };
   },
   computed: {
@@ -236,7 +259,7 @@ export default {
       const { originPrice, price } = this.spu;
       return (price / originPrice).toFixed(1) * 10;
     },
-    ...mapGetters(['cartCount'])
+    ...mapGetters(["cartCount"]),
   },
   async onLoad(options) {
     console.log(
@@ -246,32 +269,36 @@ export default {
       options
     );
     const spuId = options.id;
-    detail(spuId).then((response) => {
-      const { spu, attrs, specs, skus } = response.data;
-      this.spu = spu;
-      this.attrs = attrs;
-      this.specs = specs;
-      this.skus = skus;
-      // 默认选择第一条规格
-      this.selectedSpecValueIdArr = [];
-      this.specs.forEach((spec) => {
-        if (spec.values.length > 0) {
-          spec.values[0].selected = true; // 添加规格是否选中属性
-          this.selectedSpecValueIdArr.push(spec.values[0]);
-        }
+    detail(spuId)
+      .then((response) => {
+        const { spu, attrs, specs, skus } = response.data;
+        this.spu = spu;
+        this.attrs = attrs;
+        this.specs = specs;
+        this.skus = skus;
+        // 默认选择第一条规格
+        this.selectedSpecValueIdArr = [];
+        this.specs.forEach((spec) => {
+          if (spec.values.length > 0) {
+            spec.values[0].selected = true; // 添加规格是否选中属性
+            this.selectedSpecValueIdArr.push(spec.values[0]);
+          }
+        });
+
+        // 默认选择的规格id排序拼接字符串  例如: 1,2,3
+        const defaultSpecValueIds = this.selectedSpecValueIdArr
+          .map((item) => item.id)
+          .sort()
+          .join(",");
+
+        // 根据规格排序字符串找到匹配的sku信息
+        this.selectedSku = this.skus.filter(
+          (sku) => sku.specValueIds == defaultSpecValueIds
+        )[0];
+      })
+      .finally(() => {
+        this.isLoading = false;
       });
-
-      // 默认选择的规格id排序拼接字符串  例如: 1,2,3
-      const defaultSpecValueIds = this.selectedSpecValueIdArr
-        .map((item) => item.id)
-        .sort()
-        .join(",");
-
-      // 根据规格排序字符串找到匹配的sku信息
-      this.selectedSku = this.skus.filter(
-        (sku) => sku.specValueIds == defaultSpecValueIds
-      )[0];
-    });
 
     //接收传值,id里面放的是标题，因为测试数据并没写id
     if (spuId) {
@@ -379,7 +406,7 @@ page {
   background: $page-color-base;
   padding-bottom: 160upx;
 }
-.countSign{
+.countSign {
   width: 24upx;
   height: 24upx;
   border-radius: 50%;
@@ -876,17 +903,14 @@ page {
 /* 底部操作菜单 */
 .page-bottom {
   position: fixed;
-  left: 24upx;
-  bottom: 24upx;
-  z-index: 95;
+  bottom: var(--window-bottom);
+  left: 0;
+  right: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 690upx;
-  height: 100upx;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 20upx 0 rgba(0, 0, 0, 0.5);
-  border-radius: 16upx;
+  height: 96rpx;
+  z-index: 11;
+  box-shadow: 0 -4rpx 40rpx 0 rgba(144, 52, 52, 0.1);
+  background: #fff;
 
   .p-b-btn {
     display: flex;

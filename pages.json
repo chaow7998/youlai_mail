@@ -114,17 +114,6 @@
       }
     },
     {
-      "path": "pages/detail/detail",
-      "style": {
-        "navigationBarTitleText": "",
-        "app-plus": {
-          "titleNView": {
-            "type": "transparent"
-          }
-        }
-      }
-    },
-    {
       "path": "pages/order/order",
       "style": {
         "navigationBarTitleText": "我的订单",
@@ -254,6 +243,15 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/comment/comment",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "商品评论",
                 "enablePullDownRefresh": false
             }
             
