@@ -1,4 +1,7 @@
 {
+  "easycom": {
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+	},
   "pages": [
     {
       "path": "pages/index/index",
@@ -237,26 +240,36 @@
       "style": {
         "navigationBarTitleText": "晒单"
       }
+    },
+    {
+      "path": "pages/about/about",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/comment/comment",
+      "style": {
+        "navigationBarTitleText": "商品评论",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/integral1/integral1",
+      "style": {
+        "navigationBarTitleText": "积分详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/order/detail",
+      "style": {
+        "navigationBarTitleText": "订单详情",
+        "enablePullDownRefresh": false
+      }
     }
-      ,{
-            "path" : "pages/about/about",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/comment/comment",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "商品评论",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+  ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",

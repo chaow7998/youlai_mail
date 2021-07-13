@@ -31,7 +31,8 @@
 							<uni-number-box class="step" :min="1" :max="item.stock"
 								:value="item.count > item.stock ? item.stock : item.count"
 								:isMax="item.count >= item.stock ? true : false" :isMin="item.count === 1"
-								:index="index" @eventChange="handleChangeCount($event, item.skuId)" />
+								:index="index" @eventChange="handleChangeCount($event, item.skuId)" 
+								/>
 						</view>
 						<text class="del-btn yticon icon-fork" @click="removeCartItem(item.skuId)"></text>
 					</view>
@@ -72,6 +73,7 @@
 		removeCartItem
 	} from '@/api/oms/cart.js';
 	import uniNumberBox from '@/components/uni-number-box.vue';
+	import {setCartTabBadge,setCartTotalNum} from '@/utils/app.js';
 	export default {
 		components: {
 			uniNumberBox
@@ -83,13 +85,16 @@
 				empty: false, //空白页现实  true|false
 				cartItems: [],
 				coupon: 0,
-				isSubmit: false
+				isSubmit: false,
+				key:0
 			};
 		},
 		onShow: function() {
 			//加载页面时，查询购物车详情
-			console.log('========>> 进入商品详情页面, 路径:', this.$mp.page.route, '参数');
-			this.loadData();
+			console.log('========>> 进入商品详情页面, 路径:', this.$mp.page.route);
+			if(this.hasLogin){
+				this.loadData();
+			}
 		},
 		
 		watch: {
@@ -99,7 +104,7 @@
 				if (this.empty !== empty) {
 					this.empty = empty;
 				}
-			}
+			},
 		},
 		computed: {
 			...mapGetters(['hasLogin'])
@@ -115,10 +120,12 @@
 						items
 					} = response.data;
 					if (items.length > 0) {
+						setCartTotalNum(items.length)
 						this.$store.dispatch('user/getCartCount')
 						items.forEach((item, index) => {
 							this.$set(this.cartItems, index, item)
 						})
+						setCartTabBadge()
 						this.changeCart(); //计算总价
 					}
 				});
@@ -198,6 +205,10 @@
 						}
 					}
 				});
+			},
+			// 更新购物车角标
+			updateCartTabBadge(cartTotalNum){
+				this.$store.dispatch('updateBadge',cartTotalNum)
 			},
 			//计算总价
 			changeCart() {
@@ -437,7 +448,7 @@
 			line-height: 76upx;
 			font-size: $font-base + 2upx;
 			background: $uni-color-primary;
-			box-shadow: 1px 2px 5px rgba(217, 60, 93, 0.72);
+			// box-shadow: 1px 2px 5px rgba(217, 60, 93, 0.72);
 		}
 	}
 

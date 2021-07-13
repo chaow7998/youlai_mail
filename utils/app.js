@@ -130,7 +130,7 @@ export const navTo = (url, query = {}) => {
  * 记录购物车商品总数量
  * @param {*} value 
  */
-export const setCartTotalNum = (value) => {
+export const setCartTotalNum = (value =value || 0) => {
   uni.setStorageSync('cartTotalNum', Number(value))
 }
 

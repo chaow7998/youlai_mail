@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <button class="btn" @click.stop="getUserProfile"  :disabled="hasLogin">
+    <button class="btn" @click.stop="getUserProfile" :disabled="hasLogin">
       <view class="user-section">
         <image class="bg" src="/static/user-bg.jpg"></image>
         <view class="user-info-box">
@@ -11,7 +11,7 @@
             ></image>
           </view>
           <view class="info-box">
-            <text class="username">{{nickname || "游客" }}</text>
+            <text class="username">{{ nickname || "游客" }}</text>
           </view>
         </view>
         <!-- <view class="vip-card-box">
@@ -40,118 +40,122 @@
       @touchend="coverTouchend"
     >
       <image class="arc" src="/static/arc.png"></image>
-
-      <view class="tj-sction">
-        <view class="tj-item">
-          <text class="num">{{ balance | moneyFormatter }}</text>
-          <text>余额</text>
-        </view>
-        <view class="tj-item">
-          <text class="num">0</text>
-          <text>优惠券</text>
-        </view>
-        <view class="tj-item">
-          <text class="num">0</text>
-          <text>积分</text>
-        </view>
+      <view class="tj-item" @click="navTo('/pages/collect/collect')">
+        <text class="num">{{ balance | moneyFormatter }}</text>
+        <text>余额</text>
       </view>
-      <!-- 订单 -->
-      <view class="order-section">
-        <view
-          class="order-item"
-          @click="navTo('/pages/order/order?status=0')"
-          hover-class="common-hover"
-          :hover-stay-time="50"
-        >
-          <text class="yticon icon-shouye"></text>
-          <text>全部订单</text>
-        </view>
-        <view
-          class="order-item"
-          @click="navTo('/pages/order/order?status=101')"
-          hover-class="common-hover"
-          :hover-stay-time="50"
-        >
-          <text class="yticon icon-daifukuan"></text>
-          <text>待付款</text>
-        </view>
-        <view
-          class="order-item"
-          @click="navTo('/pages/order/order?state=301')"
-          hover-class="common-hover"
-          :hover-stay-time="50"
-        >
-          <text class="yticon icon-yishouhuo"></text>
-          <text>待发货</text>
-        </view>
-        <view
-          class="order-item"
-          @click="navTo('/pages/order/order?state=901')"
-          hover-class="common-hover"
-          :hover-stay-time="50"
-        >
-          <text class="yticon icon-shouhoutuikuan"></text>
-          <text>已完成</text>
-        </view>
+      <view class="tj-item" @click="navTo('/pages/coupon/coupon')">
+        <text class="num">0</text>
+        <text>优惠券</text>
       </view>
-      <!-- 浏览历史 -->
-      <view class="history-section icon">
-        <view class="sec-header">
-          <text class="yticon icon-lishijilu"></text>
-          <text>浏览历史</text>
-        </view>
-        <scroll-view scroll-x enable-flex class="h-list">
-          <scroll-wrapper>
-            <view-item v-for="(item, index) in footprintList" :key="index">
-              <image
-                @click="navTo(`/pages/footprint/footprint?id=${item.id}`)"
-                :src="item.list_pic_url"
-                mode="aspectFill"
-              ></image>
-            </view-item>
-          </scroll-wrapper>
-        </scroll-view>
-        <list-cell
-          icon="icon-iconfontweixin"
-          iconColor="#e07472"
-          title="我的钱包"
-          tips="您的会员还有3天过期"
-          @eventClick="navTo('/pages/wallet/index')"
-        ></list-cell>
-        <list-cell
-          icon="icon-dizhi"
-          iconColor="#5fcda2"
-          title="地址管理"
-          @eventClick="navTo('/pages/address/address')"
-        ></list-cell>
-        <list-cell
-          icon="icon-share"
-          iconColor="#9789f7"
-          title="分享"
-          tips="邀请好友赢10万大礼"
-          @eventClick="navTo('/pages/share/share')"
-        ></list-cell>
-        <list-cell
-          icon="icon-pinglun-copy"
-          iconColor="#ee883b"
-          title="晒单"
-          tips="晒单抢红包"
-          @eventClick="navTo('/pages/unboxing/unboxing')"
-        ></list-cell>
-        <list-cell
-          icon="icon-shoucang_xuanzhongzhuangtai"
-          iconColor="#54b4ef"
-          title="我的收藏"
-          @eventClick="navTo('/pages/collect/collect')"
-        ></list-cell>
-        <list-cell
-          icon="icon-shezhi1"
-          iconColor="#e07472"
-          title="设置"
-          border=""
-          @eventClick="navTo('/pages/set/set')"
-        ></list-cell>
+      <view class="tj-item" @click="navTo('/pages/integral/integral')">
+        <text class="num">0</text>
+        <text>积分</text>
       </view>
+    </view>
+    <!-- 订单 -->
+    <view class="order-section">
+      <view
+        class="order-item"
+        @click="navTo('/pages/order/order?status=0')"
+        hover-class="common-hover"
+        :hover-stay-time="50"
+      >
+        <text class="yticon icon-shouye"></text>
+        <text>全部订单</text>
+      </view>
+      <view
+        class="order-item" 
+        style="position:relative;"
+        @click="navTo('/pages/order/order?status=101')"
+        hover-class="common-hover"
+        :hover-stay-time="50"
+      >
+        <text class="yticon icon-daifukuan"></text>
+        <text>待付款</text>
+        <text class="order-badge" >3</text><!-- v-if="item.count && item.count > 0" -->
+      </view>
+      <view
+        class="order-item"
+        @click="navTo('/pages/order/order?status=301')"
+        hover-class="common-hover"
+        :hover-stay-time="50"
+      >
+        <text class="yticon icon-yishouhuo"></text>
+        <text>待发货</text>
+        <text class="order-badge" >3</text>
+      </view>
+      <view
+        class="order-item"
+        @click="navTo('/pages/order/order?status=901')"
+        hover-class="common-hover"
+        :hover-stay-time="50"
+      >
+        <text class="yticon icon-shouhoutuikuan"></text>
+        <text>已完成</text>
+      </view>
+    </view>
+    <!-- 浏览历史 -->
+    <view class="history-section icon">
+      <view class="sec-header">
+        <text class="yticon icon-lishijilu"></text>
+        <text>浏览历史</text>
+      </view>
+      <scroll-view
+        scroll-x
+        enable-flex
+        class="h-list"> <!-- @click="navTo(`/pages/footprint/footprint`)" -->
+        <scroll-wrapper>
+          <view-item v-for="(item, index) in footprintList" :key="index">
+            <image
+              @click.stop="navTo(`/pages/product/product?id=${item.id}`)"
+              :src="item.list_pic_url"
+              mode="aspectFill"
+            ></image>
+          </view-item>
+        </scroll-wrapper>
+      </scroll-view>
+      <view class="line"></view>
+      <list-cell
+        icon="icon-iconfontweixin"
+        iconColor="#e07472"
+        title="我的钱包"
+        tips="您的会员还有3天过期"
+        @eventClick="navTo('/pages/wallet/index')"
+      ></list-cell>
+      <list-cell
+        icon="icon-dizhi"
+        iconColor="#5fcda2"
+        title="地址管理"
+        @eventClick="navTo('/pages/address/address')"
+      ></list-cell>
+      <list-cell
+        icon="icon-share"
+        iconColor="#9789f7"
+        title="分享"
+        tips="邀请好友赢10万大礼"
+        @eventClick="navTo('/pages/share/share')"
+      ></list-cell>
+      <list-cell
+        icon="icon-pinglun-copy"
+        iconColor="#ee883b"
+        title="晒单"
+        tips="晒单抢红包"
+        @eventClick="navTo('/pages/unboxing/unboxing')"
+      ></list-cell>
+      <list-cell
+        icon="icon-shoucang_xuanzhongzhuangtai"
+        iconColor="#54b4ef"
+        title="我的收藏"
+        @eventClick="navTo('/pages/collect/collect')"
+      ></list-cell>
+      <list-cell
+        icon="icon-shezhi1"
+        iconColor="#e07472"
+        title="设置"
+        border=""
+        @eventClick="navTo('/pages/set/set')"
+      ></list-cell>
     </view>
   </view>
 </template>
@@ -173,12 +177,11 @@ export default {
       footprintList: [],
     };
   },
-  onShow() {
-  },
+  onShow() {},
   onLoad() {
     this.getList();
   },
-  // #ifndef MP
+  // #ifdef MP
   onNavigationBarButtonTap(e) {
     const index = e.index;
     if (index === 0) {
@@ -200,10 +203,10 @@ export default {
   // #endif
   computed: {
     ...mapState({
-      avatar:state => state.user.avatar,
-      balance:state => state.user.balance,
-      nickname:state => state.user.nickname,
-      hasLogin:state => state.user.hasLogin,
+      avatar: (state) => state.user.avatar,
+      balance: (state) => state.user.balance,
+      nickname: (state) => state.user.nickname,
+      hasLogin: (state) => state.user.hasLogin,
     }),
   },
   methods: {
@@ -211,7 +214,7 @@ export default {
       this.footprintList = [
         {
           add_time: 0,
-          id: 62,
+          id: 64, //spuid
           list_pic_url:
             "https://img0.baidu.com/it/u=1753589914,3429261228&fm=26&fmt=auto&gp=0.jpg",
           name: "平滑细篾头层青碳化竹凉席",
@@ -220,7 +223,7 @@ export default {
         },
         {
           add_time: 0,
-          id: 62,
+          id: 64, //spuid
           list_pic_url:
             "https://img0.baidu.com/it/u=1753589914,3429261228&fm=26&fmt=auto&gp=0.jpg",
           name: "平滑细篾头层青碳化竹凉席",
@@ -229,7 +232,7 @@ export default {
         },
         {
           add_time: 0,
-          id: 62,
+          id: 64, //spuid
           list_pic_url:
             "https://img0.baidu.com/it/u=1753589914,3429261228&fm=26&fmt=auto&gp=0.jpg",
           name: "平滑细篾头层青碳化竹凉席",
@@ -238,7 +241,7 @@ export default {
         },
       ];
     },
-   
+
     // 微信登录
     getUserProfile() {
       uni.getUserProfile({
@@ -344,7 +347,14 @@ export default {
   background: #fff;
   border-radius: 10upx;
 }
-
+.line {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  background: #fff;
+  padding-left: 30rpx;
+  border-top: 1px solid #e1e1e1;
+}
 .user-section {
   height: 520upx;
   padding: 100upx 30upx 0;
@@ -428,6 +438,7 @@ export default {
       color: #f6e5a3;
       margin-right: 16upx;
     }
+    
   }
 
   .e-b {
@@ -438,6 +449,7 @@ export default {
 }
 
 .cover-container {
+  @extend %section;
   background: $page-color-base;
   margin-top: -150upx;
   padding: 0 30upx;
@@ -452,17 +464,15 @@ export default {
     width: 100%;
     height: 36upx;
   }
-}
-
-.tj-sction {
-  @extend %section;
-
   .tj-item {
     @extend %flex-center;
     flex-direction: column;
     height: 140upx;
     font-size: $font-sm;
     color: #75787d;
+      &:last-of-type{
+        font-weight: bold;
+      }
   }
 
   .num {
@@ -479,6 +489,7 @@ export default {
 
   .order-item {
     @extend %flex-center;
+    position: relative;
     width: 120upx;
     height: 120upx;
     border-radius: 10upx;
@@ -487,10 +498,23 @@ export default {
   }
 
   .yticon {
-    font-size: 48upx;
+    font-size: 60upx;
     margin-bottom: 18upx;
     color: #fa436a;
   }
+  .order-badge {
+        position: absolute;
+        top: -8upx;
+        right: 30upx;
+        font-size: 20rpx;
+        background: #f74531;
+        text-align: center;
+        line-height: 28upx;
+        color: #fff;
+        border-radius: 100%;
+        min-height: 30upx;
+        min-width: 30upx;
+      }
 
   .icon-shouhoutuikuan {
     font-size: 44upx;

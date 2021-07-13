@@ -14,7 +14,7 @@
       </view>
     </view>
     <!-- 详情内容弹窗 -->
-    <popup v-model="showPopup" mode="bottom" :closeable="true" :border-radius="26">
+    <u-popup v-model="showPopup" mode="bottom" :closeable="true" :border-radius="26">
       <view class="service-content">
         <view class="title">服务</view>
         <scroll-view class="content-scroll" :scroll-y="true">
@@ -27,16 +27,14 @@
           </view>
         </scroll-view>
       </view>
-    </popup>
+    </u-popup>
   </view>
 </template>
 
 <script>
   import * as ServiceApi from '@/api/goods/service'
-  import Popup from '@/components/u-popup/u-popup';
 
   export default {
-    components:{Popup},
     props: {
       // 商品ID
       goodsId: {
@@ -74,6 +72,7 @@
 
       // 显示弹窗
       handlePopup() {
+        console.log('hahah',this.showPopup);
         this.showPopup = !this.showPopup
       }
 

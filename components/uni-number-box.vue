@@ -10,7 +10,6 @@
 			type="number" 
 			:disabled="disabled"
 			:value="inputValue" 
-			
 			@blur="_onBlur"
 		>
 		<view 
