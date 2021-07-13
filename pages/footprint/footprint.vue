@@ -35,13 +35,12 @@
 // const api = require('@/utils/api.js');
 export default {
   onLoad(options) {
-    console.log(options);
+    console.log("=====》进入了：",this.$mp.page.route,"参数：",options);
     // this.getFootprintList(options.id)
   },
   data() {
-    return {
-      footprintList: [
-        {
+    return{
+      footprintList:[{
           add_time: 0,
           id: 62,
           list_pic_url:
@@ -67,9 +66,9 @@ export default {
           name: "平滑细篾头层青碳化竹凉席",
           goods_brief: "细篾整密，凉滑不夹肉",
           retail_price: 259,
-        },
-      ],
-    };
+        },]
+    }
+   
   },
   methods: {
     // getFootprintList() {

@@ -250,7 +250,28 @@ export default {
       selectedSku: {},
       selectedSpecValueIdArr: [],
       favorite: true,
-      shareList: [],
+      shareList: [
+        {
+          type: 1,
+          icon: "/static/temp/share_wechat.png",
+          text: "微信好友",
+        },
+        {
+          type: 2,
+          icon: "/static/temp/share_moment.png",
+          text: "朋友圈",
+        },
+        {
+          type: 3,
+          icon: "/static/temp/share_qq.png",
+          text: "QQ好友",
+        },
+        {
+          type: 4,
+          icon: "/static/temp/share_qqzone.png",
+          text: "QQ空间",
+        },
+      ],
       isLoading: true,
     };
   },
@@ -299,13 +320,6 @@ export default {
       .finally(() => {
         this.isLoading = false;
       });
-
-    //接收传值,id里面放的是标题，因为测试数据并没写id
-    if (spuId) {
-      this.$api.msg(`点击了${spuId}`);
-    }
-
-    this.shareList = await this.$api.json("shareList");
   },
   methods: {
     // 跳转到领取优惠卷页面
@@ -313,7 +327,6 @@ export default {
       uni.navigateTo({
         url: "/pages/coupon/coupon",
       });
-      console.log("=====");
     },
     //规格弹窗开关
     toggleSpec() {
@@ -384,15 +397,16 @@ export default {
     addToCart() {
       const app = this;
       const skuId = app.selectedSku.id;
+      // console.log(skuId);
       addCartItem(skuId).then((response) => {
-        uni.switchTab({
+        uni.reLaunch({
           url: `/pages/cart/cart`,
-          success: (res) => {
-            let page = getCurrentPages().pop();
-            if (page == undefined || page == null) return;
-            page.curSegment = 0;
-            page.onLoad();
-          },
+          // success: (res) => {
+          //   let page = getCurrentPages().pop();
+          //   if (page == undefined || page == null) return;
+          //   page.curSegment = 0;
+          //   page.onLoad();
+          // },
         });
       });
     },
@@ -407,18 +421,23 @@ page {
   padding-bottom: 160upx;
 }
 .countSign {
-  width: 24upx;
-  height: 24upx;
-  border-radius: 50%;
   position: absolute;
-  background: #fa436a;
+  background: #FA5151;
+  width: 28upx;
+  height: 28upx;
+  border-radius: 50%;
   top: -5upx;
   right: 13upx;
   font-size: 20upx;
   font-weight: bold;
-  color: rgb(28, 163, 23);
-  text-align: center;
+  color: #ffffff;
   line-height: 20upx;
+    text{
+      position: absolute;
+      padding-left: 8upx;
+      padding-top: 4upx;
+      // text-align: center;
+    }
 }
 .icon-you {
   font-size: $font-base + 2upx;
@@ -904,10 +923,11 @@ page {
 .page-bottom {
   position: fixed;
   bottom: var(--window-bottom);
+  padding-top: 13rpx;
   left: 0;
   right: 0;
   display: flex;
-  height: 96rpx;
+  height: 100rpx;
   z-index: 11;
   box-shadow: 0 -4rpx 40rpx 0 rgba(144, 52, 52, 0.1);
   background: #fff;

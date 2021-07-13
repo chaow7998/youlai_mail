@@ -11,4 +11,6 @@
 // order.vue 修改删除订单为delete请求
 // order.vue 修改全选按钮为patch请求
 // userinfo.vue 会员截至日期
-
+// order.vue 订单状态加多个字段
+// creatOrder.vue 商品可用优惠卷获取
+// 缺少订单详情接口

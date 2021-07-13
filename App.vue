@@ -34,6 +34,7 @@
 <style lang='scss'>
 	/* 项目基础样式 */
 	@import "./app.scss";
+	@import "uview-ui/index.scss";
 	/*
 		全局公共样式和字体图标
 	*/

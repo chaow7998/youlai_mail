@@ -2,23 +2,27 @@
   <view class="page">
     <!-- #ifdef MP-->
     <block>
-      <view class="hd">
-        <image class="logo" src="/static/logo.png"></image>
-        <view class="title">蜉蝣商城欢迎你!</view>
-      </view>
-      <view class="bd">
-        <view class="top_line"></view>
-        <text class="m_name">蜉蝣商城</text>
-        <text class="s_name">获得你的公开信息（昵称、头像等）</text>
-      </view>
-      <view class="btn spacing">
-        <!-- 需要使用 button 来授权登录 -->
-        <button
-          class="weui_btn weui_btn_primary"
-          @click.stop="getUserProfile"
-        >
-          微信登录
-        </button>
+      <view class="container">
+        <view class="wechatapp">
+          <view class="header">
+            <open-data class="avatar" type="userAvatarUrl"></open-data>
+          </view>
+        </view>
+        <view class="auth-title">申请获取以下权限</view>
+        <view class="auth-subtitle">获得你的公开信息（昵称、头像等）</view>
+        <view class="login-btn">
+          <!-- 获取微信用户信息（旧版已弃用） -->
+          <!-- <button class="button btn-normal" open-type="getUserInfo" lang="zh_CN" @getuserinfo="getUserInfo">授权登录</button> -->
+          <!-- 获取微信用户信息（新版） -->
+          <button class="button btn-normal" @click.stop="getUserProfile">
+            授权登录
+          </button>
+        </view>
+        <view class="no-login-btn">
+          <button class="button btn-normal" @click="handleCancel">
+            暂不登录
+          </button>
+        </view>
       </view>
     </block>
     <!-- #endif -->
@@ -169,110 +173,79 @@ export default {
           this.logining = false;
         });
     },
+    handleCancel(){
+      uni.navigateBack({delta:1})
+    }
+
   },
 };
 </script>
 
 <style lang="scss">
 // #ifdef MP
-view,
-text {
-  font-family: PingFangSC-Light, helvetica, "Heiti SC";
-  font-size: 29rpx;
-  color: #333;
+.container {
+  padding: 0 60rpx;
+  font-size: 32rpx;
+  background: #fff;
+  min-height: 100vh;
 }
 
-.hd {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.hd .logo {
-  border-radius: 50%;
-  width: 300rpx;
-  height: 300rpx;
-  margin-top: 40rpx;
-}
-
-.hd .title {
+.wechatapp {
+  padding: 80rpx 0 48rpx;
+  border-bottom: 1rpx solid #e3e3e3;
+  margin-bottom: 72rpx;
   text-align: center;
-  font-size: 36rpx;
-  color: #000;
+
+  .header {
+    width: 190rpx;
+    height: 190rpx;
+    border: 4rpx solid #fff;
+    margin: 0 auto 0;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 2rpx 0 10rpx rgba(50, 50, 50, 0.3);
+  }
 }
 
-.bd {
-  width: 100%;
-  padding: 50rpx;
-}
-
-.bd .top_line {
-  width: 100%;
-  height: 1rpx;
-  background: #ccc;
-  margin-top: 20rpx;
-  margin-bottom: 50rpx;
-}
-
-.bd .m_name {
-  display: block;
-  text-align: center;
-  font-size: 36rpx;
-  color: #000;
-}
-
-.bd .s_name {
-  margin-top: 25rpx;
-  display: block;
-  text-align: center;
+.auth-title {
+  color: #585858;
   font-size: 34rpx;
-  color: #8a8a8a;
+  margin-bottom: 40rpx;
 }
 
-.btn {
-  padding: 120rpx 50rpx 0;
+.auth-subtitle {
+  color: #888;
+  margin-bottom: 88rpx;
+  font-size: 28rpx;
 }
 
-.weui_btn_primary {
-  background-color: #148d38;
+.login-btn {
+  padding: 0 20rpx;
+
+  .button {
+    height: 88rpx;
+    line-height: 88rpx;
+    background: #04be01;
+    color: #fff;
+    font-size: 30rpx;
+    border-radius: 999rpx;
+    text-align: center;
+  }
 }
 
-.weui_btn {
-  position: relative;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 14px;
-  padding-right: 14px;
-  box-sizing: border-box;
-  font-size: 18px;
-  text-align: center;
-  text-decoration: none;
-  color: #fff;
-  line-height: 2.33333333;
-  border-radius: 5px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  overflow: hidden;
-}
+.no-login-btn {
+  margin-top: 20rpx;
+  padding: 0 20rpx;
 
-.weui_btn:after {
-  content: " ";
-  width: 200%;
-  height: 200%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-transform: scale(0.5);
-  -ms-transform: scale(0.5);
-  transform: scale(0.5);
-  -webkit-transform-origin: 0 0;
-  -ms-transform-origin: 0 0;
-  transform-origin: 0 0;
-  box-sizing: border-box;
-  border-radius: 10px;
+  .button {
+    height: 88rpx;
+    line-height: 88rpx;
+    background: #dfdfdf;
+    color: #fff;
+    font-size: 30rpx;
+    border-radius: 999rpx;
+    text-align: center;
+  }
 }
 // #endif
 page {
