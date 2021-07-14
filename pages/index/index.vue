@@ -272,6 +272,9 @@
         <text class="price">￥{{ item.price }}</text>
       </view>
     </view>
+     
+     <!-- 检查是否有网络 -->
+     <u-no-network></u-no-network>
   </view>
 </template>
 

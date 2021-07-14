@@ -27,7 +27,7 @@
     </block>
     <!-- #endif -->
 
-    <!-- #ifdef H5-->
+    <!-- #ifdef H5 || APP-PLUS-->
     <block>
       <view class="container">
         <view class="left-bottom-sign"></view>
@@ -175,8 +175,7 @@ export default {
     },
     handleCancel(){
       uni.navigateBack({delta:1})
-    }
-
+    },
   },
 };
 </script>

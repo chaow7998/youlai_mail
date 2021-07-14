@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <button class="btn" @click.stop="getUserProfile" :disabled="hasLogin">
+    <button class="btn" @click.stop="secPlatform" :disabled="hasLogin">
       <view class="user-section">
         <image class="bg" src="/static/user-bg.jpg"></image>
         <view class="user-info-box">
@@ -65,15 +65,16 @@
         <text>全部订单</text>
       </view>
       <view
-        class="order-item" 
-        style="position:relative;"
+        class="order-item"
+        style="position: relative"
         @click="navTo('/pages/order/order?status=101')"
         hover-class="common-hover"
         :hover-stay-time="50"
       >
         <text class="yticon icon-daifukuan"></text>
         <text>待付款</text>
-        <text class="order-badge" >3</text><!-- v-if="item.count && item.count > 0" -->
+        <text class="order-badge">3</text
+        ><!-- v-if="item.count && item.count > 0" -->
       </view>
       <view
         class="order-item"
@@ -83,7 +84,7 @@
       >
         <text class="yticon icon-yishouhuo"></text>
         <text>待发货</text>
-        <text class="order-badge" >3</text>
+        <text class="order-badge">3</text>
       </view>
       <view
         class="order-item"
@@ -101,10 +102,8 @@
         <text class="yticon icon-lishijilu"></text>
         <text>浏览历史</text>
       </view>
-      <scroll-view
-        scroll-x
-        enable-flex
-        class="h-list"> <!-- @click="navTo(`/pages/footprint/footprint`)" -->
+      <scroll-view scroll-x enable-flex class="h-list">
+        <!-- @click="navTo(`/pages/footprint/footprint`)" -->
         <scroll-wrapper>
           <view-item v-for="(item, index) in footprintList" :key="index">
             <image
@@ -175,11 +174,13 @@ export default {
       coverTransition: "0s",
       moving: false,
       footprintList: [],
+      platform: "",
     };
   },
   onShow() {},
   onLoad() {
     this.getList();
+    this.getSystemInfo();
   },
   // #ifdef MP
   onNavigationBarButtonTap(e) {
@@ -329,6 +330,89 @@ export default {
       this.coverTransition = "transform 0.3s cubic-bezier(.21,1.93,.53,.64)";
       this.coverTransform = "translateY(0px)";
     },
+
+    // 选择登录API
+    secPlatform() {
+      const app = this;
+      if (app.platform == "devtools") {
+        app.getUserProfile();
+      } else {
+        app.handleThirdLoginApp();
+      }
+    },
+
+    // 获取系统信息
+    getSystemInfo() {
+      const app = this;
+      uni.getSystemInfo({
+        success: function (res) {
+          app.platform = res.platform;
+        },
+      });
+    },
+    // 第三方微信授权登录
+    handleThirdLoginApp() {
+      var that = this;
+      uni.getProvider({
+        service: "oauth",
+        success: function (res) {
+          if (~res.provider.indexOf("weixin")) {
+            uni.login({
+              provider: "weixin",
+
+              success: function (loginRes) {
+                console.log("App微信获取用户信息成功", loginRes);
+
+                that.getApploginData(loginRes); //请求登录接口方法
+              },
+
+              fail: function (res) {
+                console.log("App微信获取用户信息失败", res);
+              },
+            });
+          }
+        },
+      });
+    },
+
+    //请求登录接口方法
+
+    getApploginData(data) {
+      var that = this;
+
+      //这边是前端自己去调微信用户信息的接口，根据接口需要请求，如果不需要前端去获取的话就交给后端，可省去次操作
+
+      uni.request({
+        url:
+          "https://api.weixin.qq.com/sns/userinfo?access_token=" +
+          data.authResult.access_token +
+          "&openid=" +
+          data.authResult.openid,
+
+        method: "GET",
+
+        dataType: "json",
+
+        header: {
+          "content-type": "application/x-www-form-urlencoded", // 默认值
+        },
+
+        success(res) {
+          console.log("【登录回调啾啾啾】", res);
+
+          that.$api.ajax(
+            "smdc/index/applogin",
+            res.data,
+            function (ret) {
+              console.log("登录接口成功回调：", ret);
+            },
+            "POST",
+            true
+          );
+        },
+        fail() {},
+      });
+    },
   },
 };
 </script>
@@ -438,7 +522,6 @@ export default {
       color: #f6e5a3;
       margin-right: 16upx;
     }
-    
   }
 
   .e-b {
@@ -469,15 +552,15 @@ export default {
     flex-direction: column;
     height: 140upx;
     font-size: $font-sm;
-    color: #75787d;
-      &:last-of-type{
-        font-weight: bold;
-      }
+    color: #1d1c1c;
+    &:last-of-type {
+      font-weight: bold;
+    }
   }
 
   .num {
     font-size: $font-lg;
-    color: $font-color-dark;
+    color: #302c2c;
     margin-bottom: 8upx;
   }
 }
@@ -503,18 +586,18 @@ export default {
     color: #fa436a;
   }
   .order-badge {
-        position: absolute;
-        top: -8upx;
-        right: 30upx;
-        font-size: 20rpx;
-        background: #f74531;
-        text-align: center;
-        line-height: 28upx;
-        color: #fff;
-        border-radius: 100%;
-        min-height: 30upx;
-        min-width: 30upx;
-      }
+    position: absolute;
+    top: -8upx;
+    right: 30upx;
+    font-size: 20rpx;
+    background: #f74531;
+    text-align: center;
+    line-height: 28upx;
+    color: #fff;
+    border-radius: 100%;
+    min-height: 30upx;
+    min-width: 30upx;
+  }
 
   .icon-shouhoutuikuan {
     font-size: 44upx;

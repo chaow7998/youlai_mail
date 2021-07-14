@@ -1,5 +1,5 @@
 import { login, getUserInfo, logout } from "@/api/user";
-import {getCart} from '@/api/oms/cart'
+import { getCart } from "@/api/oms/cart";
 
 const state = {
   hasLogin: false,
@@ -7,11 +7,11 @@ const state = {
   avatar: "",
   balance: 0,
   memberId: "",
-  cartCount:0
+  cartCount: 0,
 };
 
 const mutations = {
-  SET_HAS_LOGIN: (state, hasLogin) => {
+  SET_HAS_LOGIN: (state, hasLogin) =>{
     state.hasLogin = hasLogin;
   },
   SET_NICKNAME: (state, nickname) => {
@@ -26,9 +26,9 @@ const mutations = {
   SET_MEMBERID: (state, memberId) => {
     state.memberId = memberId;
   },
-  SET_CART_COUNT:(state,cartCount)=>{
-    state.cartCount = cartCount
-  }
+  SET_CART_COUNT: (state, cartCount) => {
+    state.cartCount = cartCount;
+  },
 };
 
 const actions = {
@@ -109,10 +109,21 @@ const actions = {
     commit("SET_MEMBERID", memberId);
   },
   // 获取购物车数量
- async getCartCount({commit}){
-   const result = await getCart()
-   const cartCount = result.data.items.length
-   commit("SET_CART_COUNT",cartCount)
+  async getCartCount({ commit }) {
+    const result = await getCart();
+    const cartCount = result.data.items.length;
+    commit("SET_CART_COUNT", cartCount);
+  },
+
+  // 改变登录状态
+  noLogin({commit}){
+    uni.clearStorageSync();
+    uni.setStorageSync('cartTotalNum',0)
+    commit("SET_HAS_LOGIN", false);
+    commit("SET_NICKNAME", "");
+    commit("SET_AVATAR", "");
+    commit("SET_BALANCE", "");
+    commit("SET_MEMBERID", "");
   }
 };
 
